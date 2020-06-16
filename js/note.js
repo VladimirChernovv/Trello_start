@@ -1,5 +1,5 @@
 const Note = {
-	IdCounter: 8,
+	idCounter: 8,
 	dragged: null,
 
 	process(noteElement) {
@@ -28,10 +28,23 @@ const Note = {
 		noteElement.addEventListener('drop', Note.drop);
 	},
 
+	create() {
+		const noteElement = document.createElement('div');
+		noteElement.classList.add('note');
+		noteElement.setAttribute('draggable', 'true');
+		noteElement.setAttribute('data-note-id', Note.idCounter);
+
+		Note.idCounter++;
+		Note.process(noteElement);
+
+		return noteElement;
+	},
+
 	dragstart(event) {
-			Note.dragged = this;
-	this.classList.add('dragged');
-	event.stopPropagation()
+		Note.dragged = this;
+		this.classList.add('dragged');
+
+		event.stopPropagation();
 	},
 
 	dragend(event) {
@@ -40,33 +53,39 @@ const Note = {
 
 		document
 			.querySelectorAll('.note')
-			.forEach(x => x.classList.remove('under'))
+			.forEach(x => x.classList.remove('under'));
+
+			event.stopPropagation();
 	},
 
 	dragenter(event) {
-		if (this === Note.dragged) {
+		if (!Note.dragged || this === Note.dragged) {
 			return;
 		};
+
 		this.classList.add('under');
 	},
 
 	dragover(event) {
 		event.preventDefault();
-		if (this === Note.dragged) {
+
+		if (!Note.dragged || this === Note.dragged) {
 			return;
 		};
 	},
 
 	dragleave(event) {
-		if (this === Note.dragged) {
+		if (!Note.dragged || this === Note.dragged) {
 			return;
 		};
+
 		this.classList.remove('under');
 	},
 
 	drop(event) {
 		event.stopPropagation();
-		if (this === Note.dragged) {
+
+		if (!Note.dragged || this === Note.dragged) {
 			return;
 		};
 
@@ -77,12 +96,16 @@ const Note = {
 
 			if (indexA < indexB) {
 				this.parentElement.insertBefore(Note.dragged, this);
-			} else {
-				this.parentElement.insertBefore(Note.dragged, this.nextElementSibling);
 			}
-		} else {
+
+			else {
+				this.parentElement.insertBefore(Note.dragged, this.nextElementSibling);
+			};
+		}
+
+		else {
 			this.parentElement.insertBefore(Note.dragged, this);
 		};
 	},
-
 };
+

@@ -1,5 +1,6 @@
 let columnIdCounter = 4;
 
+// Здесь мы находим все существующиеи колонки и обрабатываем их, привязывая к каждой существующей колонке
 document
 	.querySelectorAll('.column')
 	.forEach(columnProcess);
@@ -12,12 +13,13 @@ document
 		columnElement.setAttribute('draggable', 'true');
 		columnElement.setAttribute('data-column-id', columnIdCounter);
 
-		columnElement.innerHTML = 
-		`<p class="column-header" >В плане</p>
+		columnElement.innerHTML = `
+			<p class="column-header" >В плане</p>
 			<div data-notes></div>
 			<p class="column-footer">
 				<span data-action-addNote class="action">+ Добавить карточку</span>
-		</p>`
+			</p>
+		`
 
 		columnIdCounter++;
 
@@ -30,10 +32,10 @@ document
 	.querySelectorAll('.note')
 	.forEach(Note.process);
 
-function columnProcess(columnElement) {
+function  columnProcess(columnElement) {
 	const spanAction_addNote = columnElement.querySelector('[data-action-addNote]');
 
-	spanAction_addNote.addEventListener('click', function (event) {
+	spanAction_addNote.addEventListener('click', function(event) {
 		const noteElement = document.createElement('div');
 		noteElement.classList.add('note');
 		noteElement.setAttribute('draggable', 'true');
@@ -49,6 +51,7 @@ function columnProcess(columnElement) {
 	});
 
 	const headerElement = columnElement.querySelector('.column-header');
+
 	headerElement.addEventListener('dblclick', function(event) {
 		headerElement.setAttribute('contenteditable', true);
 		headerElement.focus();
@@ -58,13 +61,13 @@ function columnProcess(columnElement) {
 		headerElement.removeAttribute('contenteditable', true);
 	});
 
-	columnElement.addEventListener('dragover', function (event) {
+	columnElement.addEventListener('dragover', function(event) {
 		event.preventDefault();
 	});
 
 	columnElement.addEventListener('drop', function(event) {
 		if (Note.dragged) {
 			return columnElement.querySelector('[data-notes]').append(Note.dragged);
-		}
+		};
 	});
 };
